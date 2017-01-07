@@ -25,7 +25,7 @@ public class Gift  extends  TimerTask {
     @Override
     public void run() {
         if(!isAdded){
-            if(second_for_add==20){
+            if(second_for_add==15){
                  msg = Message.obtain();
                 msg.arg1 = 1 ;
                 second_for_add = 0 ;

@@ -1,5 +1,6 @@
 package com.example.zezva.ontouch;
 
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
 
@@ -9,12 +10,13 @@ import java.util.TimerTask;
  * Created by Zezva on 02.01.2017.
  */
 
-public class GiftEnd extends TimerTask {
+public class IhaveGiftEnd extends TimerTask {
 
-    private  int gift_end_timer = 5 ;
+
+    private  int gift_end_timer = 5;
     private Handler handler_gift_end;
 
-    public GiftEnd(Handler handler_gift_end){
+    public IhaveGiftEnd(Handler handler_gift_end){
         this.handler_gift_end = handler_gift_end;
 
     }
@@ -27,6 +29,27 @@ public class GiftEnd extends TimerTask {
         this.handler_gift_end = handler_gift_end;
     }
 
+
+    @Override
+    public void run() {
+        if(gift_end_timer==0){
+            Message msg = Message.obtain();
+            msg.arg1 = gift_end_timer;
+            handler_gift_end.sendMessage(msg);
+            gift_end_timer = 5 ;
+            this.cancel();
+
+        }
+        else{
+            Message msg = Message.obtain();
+            msg.arg1 = gift_end_timer;
+            handler_gift_end.sendMessage(msg);
+            gift_end_timer--;
+
+        }
+    }
+
+
     public int getGift_end_timer() {
 
         return gift_end_timer;
@@ -36,18 +59,4 @@ public class GiftEnd extends TimerTask {
         return handler_gift_end;
     }
 
-    @Override
-    public void run() {
-        if(gift_end_timer==0){
-            Message msg = Message.obtain();
-            handler_gift_end.sendMessage(msg);
-            gift_end_timer = 5 ;
-            this.cancel();
-
-        }
-        else{
-            gift_end_timer--;
-
-        }
-    }
 }

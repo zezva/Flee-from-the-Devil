@@ -3,6 +3,7 @@ package com.example.zezva.ontouch;
 import android.graphics.Point;
 import android.os.Handler;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,37 @@ public class SavedInstance {
     private  ImageView remove_image ;
     private int gift_end_timer;
     private  boolean is_gift_end_on;
+    private  int time_counter;
+    private TextView time_textView;
+    private String time_textView_content ;
+
+    public String getTime_textView_content() {
+        return time_textView_content;
+    }
+
+
+
+    public void setTime_textView_content(String time_textView_content) {
+        this.time_textView_content = time_textView_content;
+    }
+
+    public void setTime_textView(TextView time_textView) {
+        this.time_textView = time_textView;
+    }
+
+    public TextView getTime_textView() {
+
+        return time_textView;
+    }
+
+    public void setTime_counter(int time_counter) {
+        this.time_counter = time_counter;
+    }
+
+    public int getTime_counter() {
+
+        return time_counter;
+    }
 
     public void setIs_gift_end_on(boolean is_gift_end_on) {
         this.is_gift_end_on = is_gift_end_on;

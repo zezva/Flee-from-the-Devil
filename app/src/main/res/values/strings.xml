@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">onTouch</string>
+    <string name="timer_counter">0m:0sec</string>
 </resources>
