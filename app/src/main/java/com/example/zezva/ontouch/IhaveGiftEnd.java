@@ -13,7 +13,7 @@ import java.util.TimerTask;
 public class IhaveGiftEnd extends TimerTask {
 
 
-    private  int gift_end_timer = 5;
+    private  int gift_end_timer = 8;
     private Handler handler_gift_end;
 
     public IhaveGiftEnd(Handler handler_gift_end){
@@ -36,7 +36,7 @@ public class IhaveGiftEnd extends TimerTask {
             Message msg = Message.obtain();
             msg.arg1 = gift_end_timer;
             handler_gift_end.sendMessage(msg);
-            gift_end_timer = 5 ;
+            gift_end_timer = 8;
             this.cancel();
 
         }

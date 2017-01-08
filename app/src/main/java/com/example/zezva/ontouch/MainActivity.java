@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private  String time_textView_content ;
     private  AudioManager audioManager ;
     private MediaPlayer mp  ;
+    private  ImageView devilCenterImage ;
+    private  TextView iHaveGiftTime ;
 
 
 
@@ -71,9 +73,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         setContentView(R.layout.activity_main);
         audioManager  = (AudioManager) getSystemService(AUDIO_SERVICE);
 
-
-
         time_Counter = (TextView) findViewById(R.id.time_counter);
+        devilCenterImage = (ImageView) findViewById(R.id.devil_center_image);
+        iHaveGiftTime = (TextView) findViewById(R.id.iHaveGiftTime);
+
+
         image_for_gift = new ImageView(this);
 
         root = (ViewGroup) findViewById(R.id.root);
@@ -129,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-    /*
+    /**
     idzaxebs  methods romelic axdens ballebis animacias
      */
     Handler handler_for_animate = new Handler() {
@@ -146,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
     };
 
-    /*
+    /**
     idzaxebs methods romelic root-shi amatebs Ball-s
      */
     Handler handler_for_add_ball = new Handler() {
@@ -157,22 +161,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
     };
 
-    /*
-    tu 5 wami gavida users artmevs sachukars tu arada
+    /**
+    tu 8 wami gavida users artmevs sachukars tu arada
     tick sound midis
      */
     Handler handler_gift_end = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if(msg.arg1 == 0){
+            int time = msg.arg1;
+            if(time == 0){
+                iHaveGiftTime.setText(String.valueOf(time));
                 Timer_for_gift_end = false;
                 duration = 1500;
                 check.setiHaveGift(false);
                 check.setRemove_image(null);
+                iHaveGiftTime.setText("");
                 mp.release();
 
             }
             else{
+                iHaveGiftTime.setText(String.valueOf(time));
                 mp = MediaPlayer.create(getApplicationContext(), R.raw.tick);
                 mp.start();
             }
@@ -199,8 +207,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     }
 
-    /*
-    sratvs sachukrebis taimers
+    /**
+    ratvs sachukrebis taimers
      */
     private void scheduleGiftTimer() {
         Timer_for_add_gift_is_on = true;
@@ -209,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         timer_for_gift.schedule(gift_timer_task, 0, 1000);
     }
 
-    /*
+    /**
     sazgvravs romeli sachukari unda daematos root-shi an tu
     sachukris dro gasulia shlis mas root-idan
      */
@@ -248,9 +256,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 }
 
             } else {
-                duration=1500;
                 if(image_for_gift != null){
-
                     root.removeView(image_for_gift);
                 }
                 check.setGiftAdded(false);
@@ -259,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
     };
 
-    /*
+    /**
     sazgvravs romeli sachukari aigo userma, aketebs sachukris shesabamis actions
     da rtavs shesabamisad sachukris dasrulebis taimers
      */
@@ -276,23 +282,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 root.removeView(image);
                 check.setRemove_image(image);
             } else if (kind == 2) {
-                duration = 4000;
+                duration = 5000;
                 scheduleGift_End_Timer();
             }
             if(image_for_gift != null){
-
                 root.removeView(image_for_gift);
             }
-
             check.setImage_fot_gift(null);
-
             Toast.makeText(MainActivity.this, "testest", Toast.LENGTH_SHORT).show();
 
         }
     };
 
 
-    /*
+    /**
     rtavs sachukris dasrulebis taimers
      */
     private void scheduleGift_End_Timer() {
@@ -302,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         gift_end_timer.schedule(gift_end_timer_task, 0, 1000);
     }
 
-    /*
+    /**
     svavs wutebsa da wamebs drois textview-ze
      */
     Handler timer_counter_handler = new Handler(){
@@ -313,14 +316,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             int secunde = time % 60;
             String res = String.valueOf(minute) + "m : " + String.valueOf(secunde) +"sec";
             time_textView_content = res ;
-
             time_Counter.setText(res);
 
 
         }
     };
 
-    /*
+    /**
     rtavs drois atvlis taimers romelic midis mteli
     tamashis ganmavlobashi
      */
@@ -352,6 +354,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         if (isPaused) {
             if (isGameInPlay) {
                 root.removeAllViews();
+
+                /**
+                devilCenterImage emateba rootze
+                 */
+                devilCenterImage.setImageResource(R.drawable.devil_50_transprent);
+                root.addView(devilCenterImage);
+
+                /**
+                rootze jdeba sachukris 5 wamis mtveli textview
+                 */
+                root.addView(iHaveGiftTime);
+
+                /**
+                patara devilebi ematebian rootze
+                 */
                 ArrayList<ImageView> image_array = savedInstance.getImage_array();
                 ArrayList<Point> points = savedInstance.getPoint_array();
                 for (int i = 0; i < image_array.size(); i++) {
@@ -361,6 +378,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     image.setY(point.y);
                     root.addView(image);
                 }
+
+                /**
+                titis devili emateba rootze
+                 */
                 ImageView myFingerShape = savedInstance.getMyFingerShape();
                 int x = savedInstance.getMyFingerShapePoint().x;
                 int y = savedInstance.getMyFingerShapePoint().y;
@@ -372,18 +393,31 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 int maxX = savedInstance.getMaxX();
                 int maxY = savedInstance.getMaxY();
 
+
+                /**
+                CoordinateThread objekti ikmneba da shignit
+                iwereba damaxsovrebuli valueebi
+                 */
                 cordThread =
                         new CoordinateThread(handler_for_animate, numberOfBalls, maxX, maxY);
                 cordThread.setMaxX(maxX);
                 cordThread.setMaxY(maxY);
                 cordThread.setNumberOfBalls(numberOfBalls);
 
+                /**
+                 *CheckCoordinateDistance objekti ikmneba da shignit iwereba
+                  * damaxsovrebuli valueebi
+                 */
                 check = new CheckCoordinatesDistance(myFingerShape, handle_for_gift_finger_distance);
                 ArrayList<ImageView> chek_image_array = savedInstance.getCheck_cord_image_araay();
                 ImageView image_for_add = savedInstance.getCheck_cord_image_for_add();
                 boolean ischanged = savedInstance.isChek_cord_ischanged();
                 boolean isGiftAdded = savedInstance.isGiftIsAdded();
 
+                /**
+                sachukari daemateba tu tamashis chakecvisas
+                sachukari iko rootze
+                 */
                 ImageView image_for_gift = savedInstance.getChek_cord_image_for_gift();
                 if (image_for_gift != null) {
                     image_for_gift.setX(savedInstance.getImage_gift_point().x);
@@ -392,7 +426,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                 }
 
-
+                /**
+                chek objektshi iwereba damaxsovrebuli valueebi
+                 */
                 check.setImage_array(chek_image_array);
                 check.setImage_for_add(image_for_add);
                 check.setIsChanged(ischanged);
@@ -402,6 +438,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 check.setiHaveGift(savedInstance.isiHaveGift());
                 check.setRemove_image(savedInstance.getRemove_image());
 
+
+                /**
+                akedan irtveba taimerebi  threadebi
+                 */
                 boolean Timer_for_add = savedInstance.isTimer_for_add_ball_is_on();
                 BallAddTimer ball_add_timer_task = new BallAddTimer(handler_for_add_ball);
                 int ballAddTimerSeconde = savedInstance.getBallAddTimer_second();
@@ -424,9 +464,18 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 if (Timer_for_gift) {
                     scheduleGiftTimer_from_resume(gift_timer_task);
                 }
+
                 boolean is_Timer_for_gift_end = savedInstance.is_gift_end_on();
                 if (is_Timer_for_gift_end) {
                     IhaveGiftEnd gift_end_timer_task = new IhaveGiftEnd(handler_gift_end);
+                    gift_end_timer_task.setGift_end_timer(savedInstance.getGift_end_timer());
+                    int gift_end_time = gift_end_timer_task.getGift_end_timer();
+                    if(gift_end_time == 0){
+                        iHaveGiftTime.setText("");
+                    }
+                    else{
+                        iHaveGiftTime.setText(String.valueOf(gift_end_time));
+                    }
                     schedule_gift_end_timer_from_resume(gift_end_timer_task);
 
                 }
@@ -434,6 +483,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 timer_time_timertask.setCounter(savedInstance.getTime_counter());
                 schedule_Timer_time_counter_from_resume(timer_time_timertask);
 
+                /**
+                drois atvlis textview jdeba rootze
+                 */
                 int time  = savedInstance.getTime_counter() ;
                 Toast.makeText(this, String.valueOf(time), Toast.LENGTH_LONG).show();
                 int minute = time/60 ;

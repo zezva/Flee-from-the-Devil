@@ -36,6 +36,15 @@ public class SavedInstance {
     private  int time_counter;
     private TextView time_textView;
     private String time_textView_content ;
+    private   ImageView devilCenterImage;
+
+    public ImageView getDevilCenterImage() {
+        return devilCenterImage;
+    }
+
+    public void setDevilCenterImage(ImageView devilCenterImage) {
+        this.devilCenterImage = devilCenterImage;
+    }
 
     public String getTime_textView_content() {
         return time_textView_content;
