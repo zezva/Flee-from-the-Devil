@@ -70,6 +70,9 @@ public class CheckCoordinatesDistance  extends    Thread {
                     int imageY = (int) image.getY() + image.getHeight() / 2;
                     boolean res = checkDistance(myFingerX, myFingerY, imageX, imageY);
                     if (res && !iHaveGift) {
+                        Message msg = Message.obtain();
+                        msg.arg1 = -1 ;
+                        handle_for_finger_gift_distance.sendMessage(msg);
                         CoordinateThread.go = false;
                     }
 

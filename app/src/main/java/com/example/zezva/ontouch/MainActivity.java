@@ -1,5 +1,6 @@
 package com.example.zezva.ontouch;
 
+import android.content.Intent;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -8,7 +9,6 @@ import android.os.Message;
 import android.os.Process;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.transition.Visibility;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private BallAddTimer ballAdd_timer_task;
     private int maxX;
     private int maxY;
+    private int maxCenterDevilX;
+    private int maxCenterDevilY;
     private CoordinateThread cordThread;
     private CheckCoordinatesDistance check;
     private Random random = new Random();
@@ -56,12 +58,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private TextView time_Counter ;
     private Timer timer_time_counter ;
     private TimeCounterTimerTask timer_time_timertask ;
-
     private  String time_textView_content ;
     private  AudioManager audioManager ;
     private MediaPlayer mp  ;
     private  ImageView devilCenterImage ;
     private  TextView iHaveGiftTime ;
+    private  DevilCenterThread devilCenterThread;
+    private int center_devil_x;
+    private int center_devil_y;
+    boolean isTransparentOnRoot = true ;
+    private int actuellx, actully ;
 
 
 
@@ -118,6 +124,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private void getMaxXY() {
         maxX = root.getRight() - image_view.getWidth();
         maxY = root.getBottom() - image_view.getHeight();
+    }
+
+    private  void getDevilCenterMaxXY(){
+        maxCenterDevilX  = root.getRight() - devilCenterImage.getWidth();
+        maxCenterDevilY  = root.getBottom() - devilCenterImage.getHeight();
+        center_devil_x = (int) devilCenterImage.getX();
+        center_devil_y  = (int) devilCenterImage.getY();
     }
 
     private void scheduleAddBallTimer() {
@@ -268,31 +281,72 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     /**
     sazgvravs romeli sachukari aigo userma, aketebs sachukris shesabamis actions
     da rtavs shesabamisad sachukris dasrulebis taimers
+     tu messeageshi -1 movida es  nishnavs rom eshmaks sheexe da
+     gadadixar meore activityze
      */
     Handler handle_for_gift_finger_distance = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (kind == 0) {
-                check.setiHaveGift(true);
-                scheduleGift_End_Timer();
-            } else if (kind == 1) {
-                int index = random.nextInt(image_array.size());
-                ImageView image = image_array.get(index);
-                image_array.remove(image);
-                root.removeView(image);
-                check.setRemove_image(image);
-            } else if (kind == 2) {
-                duration = 5000;
-                scheduleGift_End_Timer();
+            if(msg.arg1 == -1){
+              startActivity(new Intent(MainActivity.this, testActivity.class));
             }
-            if(image_for_gift != null){
-                root.removeView(image_for_gift);
+            else {
+                if (kind == 0) {
+                    check.setiHaveGift(true);
+                    scheduleGift_End_Timer();
+                } else if (kind == 1) {
+                    int index = random.nextInt(image_array.size());
+                    ImageView image = image_array.get(index);
+                    image_array.remove(image);
+                    root.removeView(image);
+                    check.setRemove_image(image);
+                } else if (kind == 2) {
+                    duration = 5000;
+                    scheduleGift_End_Timer();
+                }
+                if (image_for_gift != null) {
+                    root.removeView(image_for_gift);
+                }
+                check.setImage_fot_gift(null);
+                Toast.makeText(MainActivity.this, "testest", Toast.LENGTH_SHORT).show();
             }
-            check.setImage_fot_gift(null);
-            Toast.makeText(MainActivity.this, "testest", Toast.LENGTH_SHORT).show();
-
         }
     };
+
+    /**
+     * handleri centris devilis animaciistvis
+     */
+    Handler DevilCenterHandler  = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            devilCenterImage.setImageResource(R.drawable.devil);
+            isTransparentOnRoot = false ;
+            if(msg.arg1 != -1){
+                int x = msg.arg1;
+                int y = msg.arg2;
+                actuellx = x ;
+                actully = y ;
+                devilCenterImage.animate().x(x).y(y).setDuration(1500).start();
+            }
+            else{
+                isTransparentOnRoot = true;
+                actuellx = (int) devilCenterImage.getX();
+                actully = (int) devilCenterImage.getY();
+                devilCenterImage.setImageResource(R.drawable.devil_50_transprent);
+            }
+        }
+    };
+
+    /**
+     * rtavs threads centris eshmakistvis
+     *
+     */
+    private  void startDevilCenterThread(){
+        devilCenterThread =
+                new DevilCenterThread(DevilCenterHandler,
+                        maxCenterDevilX, maxCenterDevilY,center_devil_x, center_devil_y);
+      devilCenterThread.start();
+    }
 
 
     /**
@@ -358,8 +412,28 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 /**
                 devilCenterImage emateba rootze
                  */
+            if(isTransparentOnRoot){
+
                 devilCenterImage.setImageResource(R.drawable.devil_50_transprent);
                 root.addView(devilCenterImage);
+            }
+            else{
+                int x = savedInstance.getActuelx();
+                int y = savedInstance.getActuely();
+                devilCenterImage.setX(x);
+                devilCenterImage.setY(y);
+                devilCenterImage.setImageResource(R.drawable.devil);
+                root.addView(devilCenterImage);
+            }
+                /**
+                 * ikmneba devilcenteris threadis objekti da
+                 * atributebi jdeba im mnishvnebebze rac backpressemde iko
+                 */
+
+                devilCenterThread = new DevilCenterThread(DevilCenterHandler, maxCenterDevilX,
+                        maxCenterDevilY, center_devil_x, center_devil_y);
+                devilCenterThread.setIntervall(savedInstance.getCenterDevilintervall());
+                devilCenterThread.setDuration(savedInstance.getCenterDevilDuration());
 
                 /**
                 rootze jdeba sachukris 5 wamis mtveli textview
@@ -455,9 +529,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 gift_timer_task.setSecond_for_remove(gift_second_for_remove);
                 gift_timer_task.setAdded(giftisAdded);
                 boolean Timer_for_gift = savedInstance.isTimer_for_add_gift_is_on();
-                CoordinateThread.go = true;
-                cordThread.start();
-                check.start();
                 if (Timer_for_add) {
                     scheduleBallAddTimer_from_resume(ball_add_timer_task);
                 }
@@ -491,8 +562,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 int minute = time/60 ;
                 int secunde = time % 60;
                 String res = String.valueOf(minute) + "m : " + String.valueOf(secunde) +"sec";
-               time_Counter.setText(res);
+                time_Counter.setText(res);
                 root.addView(time_Counter);
+
+                CoordinateThread.go = true;
+                cordThread.start();
+                check.start();
+                devilCenterThread.start();
+
 
                 isPaused = false;
 
@@ -617,6 +694,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     check.interrupt();
                 }
+                if(devilCenterThread != null){
+                    savedInstance.setCenterDevilintervall(devilCenterThread.getIntervall());
+                    savedInstance.setCenterDevilDuration(devilCenterThread.getDuration());
+                    savedInstance.setActuelx(actuellx);
+                    savedInstance.setActuely(actully);
+                    devilCenterThread.interrupt();
+                }
             }
         }
 
@@ -668,6 +752,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         check.start();
         scheduleAddBallTimer();
         scheduleTimeCounterTimer();
+        getDevilCenterMaxXY();
+        startDevilCenterThread();
         view.setVisibility(View.INVISIBLE);
 
 

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">onTouch</string>
     <string name="timer_counter">0m:0sec</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

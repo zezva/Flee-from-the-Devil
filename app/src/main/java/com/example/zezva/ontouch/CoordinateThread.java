@@ -11,7 +11,7 @@ import java.util.Random;
  * Created by Zezva on 28.12.2016.
  */
 
-public class CoordinateThread extends   Thread {
+public class CoordinateThread extends Thread {
 
 
     private Handler handler_for_animate;
@@ -38,7 +38,6 @@ public class CoordinateThread extends   Thread {
     @Override
     public void run() {
         while(go){
-
             for(int  i = 0 ; i< numberOfBalls;  i++){
                 x1 = random.nextInt(maxX - min + 1) + min;
                 y1 = random.nextInt(maxY - min + 1) + min;

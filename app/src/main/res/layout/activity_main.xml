@@ -4,7 +4,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#50B1B5"
+    android:background="@color/blue_light"
     tools:context="com.example.zezva.ontouch.MainActivity">
 
 
@@ -51,6 +51,11 @@
         android:layout_alignTop="@+id/devil_center_image"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="11dp" />
+
+
+
+
+
 
 
 </RelativeLayout>

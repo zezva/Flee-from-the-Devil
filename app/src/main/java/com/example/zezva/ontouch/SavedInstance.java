@@ -37,6 +37,49 @@ public class SavedInstance {
     private TextView time_textView;
     private String time_textView_content ;
     private   ImageView devilCenterImage;
+    private  int centerDevilintervall ;
+    private  int centerDevilDuration ;
+
+
+    public void setActuelx(int actuelx) {
+        this.actuelx = actuelx;
+    }
+
+    public void setActuely(int actuely) {
+        this.actuely = actuely;
+    }
+
+    public int getActuelx() {
+
+        return actuelx;
+    }
+
+    public int getActuely() {
+        return actuely;
+    }
+
+    /**
+     * devilcenteris actualuri kooridnatebi
+
+     */
+    private int actuelx, actuely ;
+
+    public void setCenterDevilintervall(int centerDevilintervall) {
+        this.centerDevilintervall = centerDevilintervall;
+    }
+
+    public void setCenterDevilDuration(int centerDevilDuration) {
+        this.centerDevilDuration = centerDevilDuration;
+    }
+
+    public int getCenterDevilintervall() {
+
+        return centerDevilintervall;
+    }
+
+    public int getCenterDevilDuration() {
+        return centerDevilDuration;
+    }
 
     public ImageView getDevilCenterImage() {
         return devilCenterImage;
